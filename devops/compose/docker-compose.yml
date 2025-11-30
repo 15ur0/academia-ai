@@ -1,0 +1,58 @@
+﻿version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ../../        # raiz do projeto (ajuste se sua estrutura for diferente)
+      dockerfile: devops/docker/backend.dockerfile
+    image: compose-backend:latest
+    container_name: compose-backend
+    env_file:
+      - ../../.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../../backend:/app
+    depends_on:
+      - db
+      - redis
+
+  frontend:
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile
+    image: compose-frontend:latest
+    container_name: compose-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../../frontend:/app
+    command: ["npm", "run", "dev"]
+
+  nginx:
+    image: nginx:alpine
+    container_name: compose-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ../../devops/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../../frontend/dist:/usr/share/nginx/html:ro
+    depends_on:
+      - frontend
+      - backend
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: academia
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: compose-redis
+
+volumes:
+  pgdata:
