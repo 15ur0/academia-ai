@@ -26,8 +26,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
 ]
 
-ROOT_URLCONF = 'PROJECT_NAME.urls'
-WSGI_APPLICATION = 'PROJECT_NAME.wsgi.application'
+ROOT_URLCONF = 'academia.urls'
+WSGI_APPLICATION = 'academia.wsgi.application'
 
 DATABASES = {
     'default': {
@@ -41,3 +41,22 @@ DATABASES = {
 }
 
 STATIC_URL = '/static/'
+# Evita o warning sobre primary key padrão
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Configuração mínima de templates necessária para o admin funcionar
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],  # adicione caminhos se usar templates locais
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
